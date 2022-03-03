@@ -29,11 +29,21 @@ namespace Tetris
 
             Draw();
         }
+        internal void TryRotate()
+        {
+            Hide();
+            var clone = Clone();
+            Rotate(clone);
+            if (VerifyPosition(clone))
+                points = clone;
+
+            Draw();
+        }
         private bool VerifyPosition(Point[] pList)
         {
             foreach (var p in pList)
             {
-                if (p.x < 0 || p.y < 0 || p.x >= 40 || p.y >= 30)
+                if (p.X < 0 || p.Y < 0 || p.X >= Field.Width || p.Y >= Field.Height)
                     return false;
             }
 
@@ -56,23 +66,21 @@ namespace Tetris
                 p.Move(dir);
             }
         }
-        
 
-       
 
-            //public void Move(Direction dir)
-            //{
-            //    Hide();
-            //    foreach (Point p in points)
-            //    {
-            //        p.Move(dir);
-            //    }
-            //    Draw();
-            //}
+        //public void Move(Direction dir)
+        //{
+        //    Hide();
+        //    foreach (Point p in points)
+        //    {
+        //        p.Move(dir);
+        //    }
+        //    Draw();
+        //}
 
-         
 
-       
+
+
 
         public void Hide()
         {
@@ -82,7 +90,7 @@ namespace Tetris
             }
         }
 
-        public abstract void Rotate();
+        public abstract void Rotate(Point[] pList);
 
        
     }
