@@ -39,6 +39,10 @@ namespace Tetris
                 case Direction.RIGHT:
                     X += 1;
                     break;
+                case Direction.UP:
+                    Y -= 1;
+                    break;
+
             }
         }
 
