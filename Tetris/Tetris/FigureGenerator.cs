@@ -9,11 +9,10 @@
 
         private Random _rand = new Random();
 
-        public FigureGenerator(int x, int y, char c)
+        public FigureGenerator(int x, int y)
         {
             _x = x;
             _y = y;
-            _c = c;
 
         }
 
