@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Timers;
+using Microsoft.SmallBasic.Library;
 
 namespace Tetris
 {
@@ -11,6 +13,9 @@ namespace Tetris
 
         static Figure currentFigure;
         static FigureGenerator generator;
+        static FigureGenerator factory = new FigureGenerator(Field.Width / 2, 0);
+        static bool gameOver = false;
+
         static void Main(string[] args)
         {
             DrawerProvier.Drawer.InitField();
@@ -19,19 +24,22 @@ namespace Tetris
             currentFigure = generator.GetNewFigure();
             SetTimer();
 
-            while (true)
+            currentFigure = factory.GetNewFigure();
+            currentFigure.Draw();
+            GraphicsWindow.KeyDown += GraphicsWindow_KeyDown;
+        }
+
+        private static void GraphicsWindow_KeyDown()
+        {
+            Monitor.Enter(_lockObject);
+            var result = HandleKey(currentFigure, GraphicsWindow.LastKey);
+
+            if (GraphicsWindow.LastKey == "Down")
             {
-                if (Console.KeyAvailable)
-                {
-                   var key = Console.ReadKey();
-                   Monitor.Enter(_lockObject);
-                   var result = HandleKey(currentFigure, key);
-                   ProcessResult(result, ref currentFigure);
-                   Monitor.Exit(_lockObject);  
-                }
+                gameOver = ProcessResult(result, ref currentFigure);
             }
 
-        Console.ReadLine();
+            Monitor.Exit(_lockObject);
         }
 
         private static bool ProcessResult(Result result, ref Figure currentFigure)
@@ -58,17 +66,17 @@ namespace Tetris
                 return false;
         }
 
-        private static Result HandleKey(Figure f, ConsoleKeyInfo key)
+        private static Result HandleKey(Figure f, String key)
         {
-            switch (key.Key)
+            switch (key)
             {
-                case ConsoleKey.LeftArrow:
+                case "Left":
                     return f.TryMove(Direction.LEFT);
-                case ConsoleKey.RightArrow:
+                case "Right":
                     return f.TryMove(Direction.RIGHT);
-                case ConsoleKey.DownArrow:
+                case "Down":
                     return f.TryMove(Direction.DOWN);
-                case ConsoleKey.Spacebar:
+                case "Space":
                     return f.TryRotate();
             }
             return Result.SUCCESS;

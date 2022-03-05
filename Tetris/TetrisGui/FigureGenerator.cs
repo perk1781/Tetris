@@ -1,4 +1,6 @@
-﻿namespace Tetris
+﻿using System;
+
+namespace Tetris
 {
     internal class FigureGenerator
 
@@ -7,7 +9,7 @@
         private int _y;
         private char _c;
 
-        private Random _rand = new Random();
+        private Random _rand = new System.Random();
 
         public FigureGenerator(int x, int y)
         {
